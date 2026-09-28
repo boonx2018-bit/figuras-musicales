@@ -34,13 +34,13 @@
     }
 
     .simbolo {
-      font-size: 65px;
+      font-size: 75px;
       margin: 5px;
     }
 
     button {
       font-size: 18px;
-      padding: 14px 25px;
+      padding: 16px 25px;
       border: 0;
       border-radius: 12px;
       cursor: pointer;
@@ -60,6 +60,12 @@
       margin-bottom: 15px;
     }
 
+    .instruccion {
+      font-size: 14px;
+      color: #777;
+      margin-top: 15px;
+    }
+
     footer {
       margin-top: 35px;
       color: #777;
@@ -73,7 +79,7 @@
 <h1>🎵 Figuras Musicales</h1>
 
 <p class="subtitulo">
-Escucha cómo cambia la duración de cada figura<br>
+Escucha la duración de la figura musical<br>
 Tempo: 80 BPM
 </p>
 
@@ -82,7 +88,8 @@ Tempo: 80 BPM
   <div class="simbolo">𝅝</div>
   <h2>Redonda</h2>
   <div class="tiempo">4 tiempos</div>
-  <button onclick="tocar(4)">▶ Escuchar redonda</button>
+  <button onclick="tocar(4)">▶ Escuchar 8 veces</button>
+  <div class="instruccion">Toca el botón para escuchar su duración.</div>
 </div>
 
 
@@ -90,7 +97,8 @@ Tempo: 80 BPM
   <div class="simbolo">𝅗𝅥</div>
   <h2>Blanca</h2>
   <div class="tiempo">2 tiempos</div>
-  <button onclick="tocar(2)">▶ Escuchar blanca</button>
+  <button onclick="tocar(2)">▶ Escuchar 8 veces</button>
+  <div class="instruccion">Toca el botón para escuchar su duración.</div>
 </div>
 
 
@@ -98,7 +106,8 @@ Tempo: 80 BPM
   <div class="simbolo">♩</div>
   <h2>Negra</h2>
   <div class="tiempo">1 tiempo</div>
-  <button onclick="tocar(1)">▶ Escuchar negra</button>
+  <button onclick="tocar(1)">▶ Escuchar 8 veces</button>
+  <div class="instruccion">Toca el botón para escuchar su duración.</div>
 </div>
 
 
@@ -106,7 +115,8 @@ Tempo: 80 BPM
   <div class="simbolo">♪</div>
   <h2>Corchea</h2>
   <div class="tiempo">½ tiempo</div>
-  <button onclick="tocar(0.5)">▶ Escuchar corchea</button>
+  <button onclick="tocar(0.5)">▶ Escuchar 8 veces</button>
+  <div class="instruccion">Toca el botón para escuchar su duración.</div>
 </div>
 
 
@@ -114,7 +124,8 @@ Tempo: 80 BPM
   <div class="simbolo">♬</div>
   <h2>Semicorchea</h2>
   <div class="tiempo">¼ de tiempo</div>
-  <button onclick="tocar(0.25)">▶ Escuchar semicorchea</button>
+  <button onclick="tocar(0.25)">▶ Escuchar 8 veces</button>
+  <div class="instruccion">Toca el botón para escuchar su duración.</div>
 </div>
 
 
@@ -122,67 +133,5 @@ Tempo: 80 BPM
   <div class="simbolo">♬</div>
   <h2>Fusa</h2>
   <div class="tiempo">⅛ de tiempo</div>
-  <button onclick="tocar(0.125)">▶ Escuchar fusa</button>
-</div>
-
-
-<footer>
-Proyecto interactivo de figuras musicales
-</footer>
-
-
-<script>
-
-let contexto;
-
-function tocar(tiempos) {
-
-  if (!contexto) {
-    contexto = new (window.AudioContext ||
-                    window.webkitAudioContext)();
-  }
-
-  const bpm = 80;
-
-  // duración de un tiempo
-  const beat = 60 / bpm;
-
-  const duracion = beat * tiempos;
-
-  let inicio = contexto.currentTime + 0.05;
-
-  /*
-    Repetimos el sonido 8 veces
-    dejando una pequeña separación
-    para distinguir cada figura.
-  */
-
-  for (let i = 0; i < 8; i++) {
-
-    let osc = contexto.createOscillator();
-    let gain = contexto.createGain();
-
-    osc.type = "sine";
-    osc.frequency.value = 440;
-
-    osc.connect(gain);
-    gain.connect(contexto.destination);
-
-    let comienzo = inicio + i * (duracion + 0.18);
-    let final = comienzo + duracion;
-
-    gain.gain.setValueAtTime(0, comienzo);
-    gain.gain.linearRampToValueAtTime(0.30, comienzo + 0.02);
-
-    gain.gain.setValueAtTime(0.30, final - 0.04);
-    gain.gain.linearRampToValueAtTime(0, final);
-
-    osc.start(comienzo);
-    osc.stop(final + 0.05);
-  }
-}
-
-</script>
-
-</body>
-</html>
+  <button onclick="tocar(0.125)">▶ Escuchar 8 veces</button>
+  <div class="instruccion">Toca el
