@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Figuras Musicales Interactivas</title>
 
   <style>
@@ -38,6 +39,12 @@
       margin: 5px;
     }
 
+    .tiempo {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 15px;
+    }
+
     button {
       font-size: 18px;
       padding: 16px 25px;
@@ -52,12 +59,6 @@
 
     button:active {
       transform: scale(.97);
-    }
-
-    .tiempo {
-      font-size: 16px;
-      color: #555;
-      margin-bottom: 15px;
     }
 
     .instruccion {
@@ -79,8 +80,8 @@
 <h1>🎵 Figuras Musicales</h1>
 
 <p class="subtitulo">
-Escucha la duración de la figura musical<br>
-Tempo: 80 BPM
+  Escucha la duración de la figura musical<br>
+  Tempo: 80 BPM
 </p>
 
 
@@ -89,7 +90,9 @@ Tempo: 80 BPM
   <h2>Redonda</h2>
   <div class="tiempo">4 tiempos</div>
   <button onclick="tocar(4)">▶ Escuchar 8 veces</button>
-  <div class="instruccion">Toca el botón para escuchar su duración.</div>
+  <div class="instruccion">
+    Toca el botón para escuchar su duración.
+  </div>
 </div>
 
 
@@ -98,7 +101,9 @@ Tempo: 80 BPM
   <h2>Blanca</h2>
   <div class="tiempo">2 tiempos</div>
   <button onclick="tocar(2)">▶ Escuchar 8 veces</button>
-  <div class="instruccion">Toca el botón para escuchar su duración.</div>
+  <div class="instruccion">
+    Toca el botón para escuchar su duración.
+  </div>
 </div>
 
 
@@ -107,7 +112,9 @@ Tempo: 80 BPM
   <h2>Negra</h2>
   <div class="tiempo">1 tiempo</div>
   <button onclick="tocar(1)">▶ Escuchar 8 veces</button>
-  <div class="instruccion">Toca el botón para escuchar su duración.</div>
+  <div class="instruccion">
+    Toca el botón para escuchar su duración.
+  </div>
 </div>
 
 
@@ -116,7 +123,9 @@ Tempo: 80 BPM
   <h2>Corchea</h2>
   <div class="tiempo">½ tiempo</div>
   <button onclick="tocar(0.5)">▶ Escuchar 8 veces</button>
-  <div class="instruccion">Toca el botón para escuchar su duración.</div>
+  <div class="instruccion">
+    Toca el botón para escuchar su duración.
+  </div>
 </div>
 
 
@@ -125,7 +134,9 @@ Tempo: 80 BPM
   <h2>Semicorchea</h2>
   <div class="tiempo">¼ de tiempo</div>
   <button onclick="tocar(0.25)">▶ Escuchar 8 veces</button>
-  <div class="instruccion">Toca el botón para escuchar su duración.</div>
+  <div class="instruccion">
+    Toca el botón para escuchar su duración.
+  </div>
 </div>
 
 
@@ -134,4 +145,184 @@ Tempo: 80 BPM
   <h2>Fusa</h2>
   <div class="tiempo">⅛ de tiempo</div>
   <button onclick="tocar(0.125)">▶ Escuchar 8 veces</button>
-  <div class="instruccion">Toca el
+  <div class="instruccion">
+    Toca el botón para escuchar su duración.
+  </div>
+</div>
+
+
+<footer>
+  Proyecto interactivo de figuras musicales
+</footer>
+
+
+<script>
+
+let contexto;
+
+
+/* ==========================================
+   DETECTAR QUÉ FIGURA VIENE DESDE EL QR
+   ========================================== */
+
+const parametros = new URLSearchParams(window.location.search);
+
+const figuraSeleccionada =
+  parametros.get("figura");
+
+
+const figurasValidas = [
+  "redonda",
+  "blanca",
+  "negra",
+  "corchea",
+  "semicorchea",
+  "fusa"
+];
+
+
+/*
+Si la dirección contiene, por ejemplo:
+
+?figura=redonda
+
+se ocultan TODAS las figuras
+excepto la redonda.
+*/
+
+if (
+  figuraSeleccionada &&
+  figurasValidas.includes(figuraSeleccionada)
+) {
+
+  document
+    .querySelectorAll(".figura")
+    .forEach(function(figura) {
+
+      figura.style.display = "none";
+
+    });
+
+
+  const seleccionada =
+    document.getElementById(figuraSeleccionada);
+
+
+  if (seleccionada) {
+
+    seleccionada.style.display = "block";
+
+  }
+}
+
+
+/* ==========================================
+   GENERAR EL SONIDO
+   ========================================== */
+
+function tocar(tiempos) {
+
+  if (!contexto) {
+
+    contexto = new (
+      window.AudioContext ||
+      window.webkitAudioContext
+    )();
+
+  }
+
+
+  if (contexto.state === "suspended") {
+
+    contexto.resume();
+
+  }
+
+
+  const bpm = 80;
+
+  const beat = 60 / bpm;
+
+  const duracion = beat * tiempos;
+
+  const inicio =
+    contexto.currentTime + 0.05;
+
+
+  /*
+  Repetimos la figura 8 veces.
+  */
+
+  for (let i = 0; i < 8; i++) {
+
+    const osc =
+      contexto.createOscillator();
+
+    const gain =
+      contexto.createGain();
+
+
+    osc.type = "sine";
+
+    osc.frequency.value = 440;
+
+
+    osc.connect(gain);
+
+    gain.connect(
+      contexto.destination
+    );
+
+
+    const comienzo =
+      inicio +
+      i * (duracion + 0.18);
+
+
+    const final =
+      comienzo + duracion;
+
+
+    gain.gain.setValueAtTime(
+      0,
+      comienzo
+    );
+
+
+    gain.gain.linearRampToValueAtTime(
+      0.30,
+      comienzo + 0.02
+    );
+
+
+    const fadeOut =
+      Math.max(
+        comienzo + 0.025,
+        final - 0.025
+      );
+
+
+    gain.gain.setValueAtTime(
+      0.30,
+      fadeOut
+    );
+
+
+    gain.gain.linearRampToValueAtTime(
+      0,
+      final
+    );
+
+
+    osc.start(comienzo);
+
+    osc.stop(final + 0.05);
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
